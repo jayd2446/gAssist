@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+&nbsp;&nbsp;&nbsp;
+<html lang="en">
+<head>
+
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Google Assistant</title>
+  <meta name="author" content="jottocraft">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!-- Fluid UI -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="fluid.css" media="screen,projection"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script>if (window.module) module = window.module;</script>
+  <script type="text/javascript" src="fluid.js"></script>
+  <script>if (window.module) module = window.module;</script>
+  <script>
+  setTimeout(function(){
+       $(".button-collapse").sideNav();
+ }, 100);
+  </script>
+
+</head>
+<body>
+  <script>
+      const {shell} = require('electron');
+      var session = require('electron').remote.session;
+var ses = session.fromPartition('persist:name');
+  function python() {
+shell.openItem('install-python.exe');
+  }
+  function modules() {
+    shell.openItem('install-modules.bat');
+  }
+  function device() {
+    shell.openItem('register-device.bat')
+  }
+  function opencmd() {
+    shell.openItem('run.bat');
+  }
+  cookieval = null;
+  function getCookie(name) {
+    cookieval = null;
+    var value = {
+        name: name // the request must have this format to search the cookie.
+    };
+    ses.cookies.get(value, function(error, cookies) {
+      cookieval = cookies[0].value; // the value saved on the cookie
+    })
+}
+function setCookie(name, data) {
+    var expiration = new Date();
+    var hour = expiration.getHours();
+    hour = hour + 6;
+    expiration.setHours(hour);
+    ses.cookies.set({
+        url: "https://tp.js.org", //the url of the cookie.
+        name: name, // a name to identify it.
+        value: data, // the value that you want to save
+        expirationDate: expiration.getTime()
+    }, function(error) {
+        /*console.log(error);*/
+    });
+}
+function assistant() {
+var x = document.getElementById("assistant");
+var y = document.getElementById("setup");
+x.style.display = "block";
+y.style.display = "none";
+}
+function setup() {
+var x = document.getElementById("assistant");
+var y = document.getElementById("setup");
+x.style.display = "none";
+y.style.display = "block";
+}
+
+  </script>
+  <script>
+  getCookie("setup");
+  setTimeout(function(){
+   if (cookieval == null) {
+     setup();
+   } else {
+     assistant();
+   }
+  }, 100);
+      const fs = require("fs");
+  function utrans() {
+    var data = fs.readFileSync('utrans.txt');
+    $("#chatcurrent .utransloc").html(data.toString());
+  }
+  function rtrans() {
+    var dataa = fs.readFileSync('rtrans.txt');
+    $("#chatcurrent .rtransloc").html(dataa.toString());
+  }
+  function micupdate() {
+    var dataaa = fs.readFileSync('listen.txt');
+    aaa = dataaa.toString();
+    if (aaa == "off") {
+      document.getElementById("micicon").innerHTML = "mic_none"
+    } else {
+      if (aaa == "listen") {
+        document.getElementById("micicon").innerHTML = "mic"
+      }
+    }
+  }
+  function start() {
+    assistant();
+    setCookie("setup", "true");
+  }
+  function textbox() {
+    var r = $("#chatcurrent .rtransloc").text();
+    var u = $("#chatcurrent .utransloc").text();
+    if (r == "") {
+      $("#chatcurrent .rtransloc").hide()
+    } else {
+      $("#chatcurrent .rtransloc").show()
+    }
+    if (u == "") {
+      $("#chatcurrent .utransloc").hide()
+    } else {
+      $("#chatcurrent .utransloc").show()
+    }
+  }
+  </script>
+  <script>
+  setTimeout(function(){
+  function refresh() {
+    utrans();
+    rtrans();
+    micupdate();
+    textbox();
+    setTimeout(function(){ refresh(); }, 100);
+  }
+  refresh();
+}, 200);
+function listen() {
+  document.getElementById("micicon").innerHTML = "mic"
+  var isactive = $("#chatcurrent .rtransloc").text();
+  if (isactive !== "") {
+    document.getElementById("chathistory").innerHTML = document.getElementById("chatcurrent").innerHTML;
+    fs.writeFile('rtrans.txt', '', (err) => {
+    if (err) throw err;
+    console.log('The file has been saved!');
+  });
+    fs.writeFile('utrans.txt', '', (err) => {
+    if (err) throw err;
+    console.log('The file has been saved!');
+  });
+  }
+  fs.writeFile('listen.txt', 'listen', (err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
+}
+  </script>
+  <style>
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding-left:10px;
+    padding-right: 10px;
+}
+body:not(.dark) .utransloc {
+  background-color:#e6e8ed;
+}
+body.dark .utransloc {
+  background-color:#23272A;
+}
+body:not(.dark) .rtransloc {
+  border-color: #d7dae0;
+}
+body.dark .rtransloc {
+  border-color: #16181a;
+}
+  </style>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+      <ul id="slide-out" class="side-nav">
+         <li><div class="user-view">
+           <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
+            <h5>Google Assistant</h5>
+           <span class="email">v0.0.4 Developer Preview</span>
+         </div></li>
+         <li><a href="#!" onclick="assistant();"><i class="material-icons">mic</i>Assistant</a></li>
+         <li><a href="#!" onclick="setup();"><i class="material-icons">build</i>Setup</a></li>
+         <li><a href="#" onclick="fluid.dark();"><i class="material-icons">format_paint</i>Change Theme</a></li>
+         <li><div class="divider"></div></li>
+         <li><a class="subheader">Assistant</a></li>
+         <li><a href="#" onclick="shell.openExternal('https://myactivity.google.com/myactivity')"><i class="material-icons">replay</i>Activity</a></li>
+         <li><a href="#" onclick="shell.openExternal('https://assistant.google.com/intl/en_us/platforms/phones/')"><i class="material-icons">phonelink_setup</i>Mobile App</a></li>
+       </ul>
+       <div style="" class="row">
+       <a href="#" data-activates="slide-out" class="button-collapse btn-flat left" style="margin-top:5px;"><i class="material-icons left">menu</i></a>
+       <a href="#" onclick="opencmd();"  class="btn-flat  right" style="margin-top:5px;"><i class="material-icons left">graphic_eq</i></a>
+     </div>
+  <div class="container" id="setup" style="margin-top:10%;display:none">
+    <img src="assistant.png" style="width:150px;height:150px;"></img>
+    <br>
+    <div>
+        <h4>Setup your Google Assistant</h4>
+        <br>
+        <br>
+        <p>Google Assistant is now on your PC</p>
+      </div>
+        <b>Install python with pip and system path</b>
+        <br><br>
+        <button class="btn waves-effect" onclick="python();">Install Python 3</button>
+        <br><br>
+        <button class="btn waves-effect" onclick="modules();">Install Python Modules</button>
+        <br>
+        <br>
+        <button class="btn waves-effect" onclick="device();">Register device with Google</button>
+        <br><br>
+        <h5>Service</h5>
+        <br>
+        <p>You will need to start the service using the button at the right top corner in order to use the Google Assistant. Test the service to see if everything is working. It should say that it is waiting for this app.</p>
+        <br>
+        <p>Install the service by moving the pushtotalk.py file in this program's files to %localappdata%\Programs\Python\Python36-32\Lib\site-packages\googlesamples\assistant\grpc</p>
+        <button class="btn waves-effect" onclick="opencmd();">Test</button>
+        <br><br>
+        <h5>Working?</h5>
+        <button class="btn waves-effect" onclick="start();">Start using the app</button>
+        <br><br><br>
+        <h5>Not working?</h5>
+        <p>Email jotto3053@gmail.com, or open an issue on GitHub. Please provide a screenshot of the command prompt.</p>
+        <br><br><br>
+  </div>
+
+  <!-- Assistant -->
+<script>
+window.setInterval(function() {
+  var elem = document.getElementById('assistant');
+  elem.scrollTop = elem.scrollHeight;
+}, 100);
+</script>
+  <div class="container footer" id="assistant" style="margin-top:10%;display:none;width:100%;overflow:auto;z-index:-50000 !important;">
+    <br>
+        <br><br>
+        <div id="chathistory">
+        </div>
+        <br><br>
+        <div id="chatcurrent">
+        <div class="utransloc" style="border-radius:50px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">Test</div>
+        <br><br>
+        <img src="assistant.png" style="width:50px;height:50px;"></img>
+        <div class="rtransloc" style="border-radius:30px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;"></div>
+      </div>
+        <br><br><br>
+        <div class="center">
+        <button class="btn-flat waves-effect btn-large" onclick="listen();"><i id="micicon" class="material-icons">mic_none</i></button>
+        </div>
+        <br>
+  </div>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

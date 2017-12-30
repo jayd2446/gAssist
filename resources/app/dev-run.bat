@@ -1,0 +1,1 @@
+C:\Users\jack\node_modules\electron\dist\electron.exe C:\Users\jack\Documents\google-assistant-pc

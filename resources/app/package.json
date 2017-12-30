@@ -1,0 +1,13 @@
+{
+  "name": "Google Assistant",
+  "main": "main.js",
+  "version": "0.0.1",
+  "repository": "https://github.com",
+  "productName": "Google Assistant",
+  "author": "jottocraft",
+  "dependencies": {
+    "request-promise": "^4.2.2",
+    "zerorpc": "git+https://github.com/fyears/zerorpc-node.git"
+  },
+  "description": "Use the Google Assistant on your computer"
+}
