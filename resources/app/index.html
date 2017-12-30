@@ -45,6 +45,9 @@ shell.openItem('install-python.exe');
   function opencmd() {
     shell.openItem('run.bat');
   }
+  function debugs() {
+    shell.openItem('run-debug.bat');
+  }
   cookieval = null;
   function getCookie(name) {
     cookieval = null;
@@ -72,14 +75,26 @@ function setCookie(name, data) {
 function assistant() {
 var x = document.getElementById("assistant");
 var y = document.getElementById("setup");
+var y = document.getElementById("debug");
 x.style.display = "block";
 y.style.display = "none";
+z.style.display = "none";
 }
 function setup() {
 var x = document.getElementById("assistant");
 var y = document.getElementById("setup");
+var z = document.getElementById("debug");
 x.style.display = "none";
 y.style.display = "block";
+z.style.display = "none";
+}
+function debug() {
+var x = document.getElementById("assistant");
+var y = document.getElementById("setup");
+var z = document.getElementById("debug");
+x.style.display = "none";
+y.style.display = "none";
+z.style.display = "block";
 }
 
   </script>
@@ -163,11 +178,21 @@ function listen() {
 }
 function setuppg(num) {
   numm = num - 1
-  var x = document.getElementById("setup" + numm);
+  if (num !== 1) {var x = document.getElementById("setup" + numm);}
   var y = document.getElementById("setup" + num);
-  x.style.display = "none";
+  if (num !== 1) {x.style.display = "none";}
   y.style.display = "block";
-}
+  if (num == 1) {
+    setup();
+    i = 2
+    while (i < 6) {
+    console.log(i)
+    var x = document.getElementById("setup" + i);
+    x.style.display = "none";
+    i = i + 1
+  }
+  }
+  }
   </script>
   <style>
   .footer {
@@ -201,8 +226,9 @@ body.dark .rtransloc {
            <span class="email">v0.0.6 Developer Preview</span>
          </div></li>
          <li><a href="#!" onclick="assistant();"><i class="material-icons">mic</i>Assistant</a></li>
-         <li><a href="#!" onclick="setup();"><i class="material-icons">build</i>Setup</a></li>
+         <li><a href="#!" onclick="setuppg(1);"><i class="material-icons">build</i>Setup</a></li>
          <li><a href="#" onclick="fluid.dark();"><i class="material-icons">format_paint</i>Change Theme</a></li>
+         <li><a href="#" onclick="debug();"><i class="material-icons">bug_report</i>Debug</a></li>
          <li><div class="divider"></div></li>
          <li><a class="subheader">Assistant</a></li>
          <li><a href="#" onclick="shell.openExternal('https://myactivity.google.com/myactivity')"><i class="material-icons">replay</i>Activity</a></li>
@@ -245,6 +271,10 @@ body.dark .rtransloc {
         <br>
         <button class="btn waves-effect" onclick="device();">Register device with Google</button>
         <br><br>
+        <h4>Get the mobile app</h4>
+        <br>
+        <p>Make the assistant yours, change settings, and much more by getting the official mobile app. However, the assistant will still work fine on PC without it.</p>
+        <br>
         <div>
           <button onclick="setuppg(4);">Next</button>
         </div>
@@ -266,10 +296,13 @@ body.dark .rtransloc {
       </div>
       <div id="setup5" style="display:none;">
         <h5>Working?</h5>
+        <br>
+        <p>Great! Have fun using the Google Assistant! Note that some things will not work because of the SDK's limitations. You can always setup again if anything breaks using the menu at the left top corner.</p>
+        <br>
         <button class="btn waves-effect" onclick="start();">Start using the app</button>
         <br><br><br>
         <h5>Not working?</h5>
-        <p>Email jotto3053@gmail.com, or open an issue on GitHub. Please provide a screenshot of the command prompt.</p>
+        <p>Email jotto3053@gmail.com, or <a href="#" onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')">open an issue on GitHub</a>. Please provide a screenshot of the command prompt.</p>
         <br><br><br>
       </div>
   </div>
@@ -299,6 +332,17 @@ window.setInterval(function() {
         </div>
         <br>
   </div>
+  <div class="container" id="debug" style="display:none">
+    <br>
+    <h4>Debug Menu</h4>
+    <br>
+    <button onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')" style="background-color:red;color:white;">Report a bug</button>
+    <br>
+    <br>
+    <br>
+    <button onclick="debugs();">Debug The Service</button>
+  </div>
+
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
