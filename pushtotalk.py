@@ -167,6 +167,9 @@ class SampleAssistant(object):
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
                 logging.info('Expecting follow-on query from user.')
+                file2write=open("listen.txt",'w')
+                file2write.write("listen")
+                file2write.close()
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
                 continue_conversation = False
             looptime = looptime + 1
@@ -449,6 +452,16 @@ def main(api_endpoint, credentials, project_id,
                     # If we only want one conversation, break.
                     if once and (not continue_conversation):
                         break
+            else:
+                continue_conversation = assistant.assist()
+                # wait for user trigger if there is no follow-up turn in
+                # the conversation.
+                wait_for_user_trigger = not continue_conversation
+
+                # If we only want one conversation, break.
+                if once and (not continue_conversation):
+                    break
+
 
 
 if __name__ == '__main__':

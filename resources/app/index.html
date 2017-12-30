@@ -161,6 +161,13 @@ function listen() {
   console.log('The file has been saved!');
 });
 }
+function setuppg(num) {
+  numm = num - 1
+  var x = document.getElementById("setup" + numm);
+  var y = document.getElementById("setup" + num);
+  x.style.display = "none";
+  y.style.display = "block";
+}
   </script>
   <style>
   .footer {
@@ -191,7 +198,7 @@ body.dark .rtransloc {
          <li><div class="user-view">
            <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
             <h5>Google Assistant</h5>
-           <span class="email">v0.0.4 Developer Preview</span>
+           <span class="email">v0.0.5 Developer Preview</span>
          </div></li>
          <li><a href="#!" onclick="assistant();"><i class="material-icons">mic</i>Assistant</a></li>
          <li><a href="#!" onclick="setup();"><i class="material-icons">build</i>Setup</a></li>
@@ -208,34 +215,63 @@ body.dark .rtransloc {
   <div class="container" id="setup" style="margin-top:10%;display:none">
     <img src="assistant.png" style="width:150px;height:150px;"></img>
     <br>
-    <div>
+    <div id="setup1">
         <h4>Setup your Google Assistant</h4>
         <br>
         <br>
         <p>Google Assistant is now on your PC</p>
-      </div>
-        <b>Install python with pip and system path</b>
-        <br><br>
-        <button class="btn waves-effect" onclick="python();">Install Python 3</button>
-        <br><br>
-        <button class="btn waves-effect" onclick="modules();">Install Python Modules</button>
         <br>
+        <div>
+          <button onclick="setuppg(2);">Setup</button>
+        </div>
+      </div>
+      <div id="setup2" style="display:none;">
+        <h4>Install Python</h4>
+        <br>
+        <p>Make sure to install with the system path and pip. If you have python 2, you may have to upgrade.</p>
+        <br>
+        <button class="btn waves-effect" onclick="python();">Install Python 3</button>
+        <br>
+        <br>
+        <button class="btn waves-effect" onclick="modules();">Install Python Modules</button>
+        <br><br>
+        <div>
+          <button onclick="setuppg(3);">Next</button>
+        </div>
+        <br><br>
+        </div>
+        <div id="setup3" style="display:none;">
+        <h4>Register your device</h4>
         <br>
         <button class="btn waves-effect" onclick="device();">Register device with Google</button>
         <br><br>
-        <h5>Service</h5>
+        <div>
+          <button onclick="setuppg(4);">Next</button>
+        </div>
+        <br><br>
+      </div>
+      <div id="setup4" style="display:none;">
+        <br>
+        <h4>Service</h4>
         <br>
         <p>You will need to start the service using the button at the right top corner in order to use the Google Assistant. Test the service to see if everything is working. It should say that it is waiting for this app.</p>
         <br>
         <p>Install the service by moving the pushtotalk.py file in this program's files to %localappdata%\Programs\Python\Python36-32\Lib\site-packages\googlesamples\assistant\grpc</p>
         <button class="btn waves-effect" onclick="opencmd();">Test</button>
         <br><br>
+        <div>
+          <button onclick="setuppg(5);">Next</button>
+        </div>
+        <br><br>
+      </div>
+      <div id="setup5" style="display:none;">
         <h5>Working?</h5>
         <button class="btn waves-effect" onclick="start();">Start using the app</button>
         <br><br><br>
         <h5>Not working?</h5>
         <p>Email jotto3053@gmail.com, or open an issue on GitHub. Please provide a screenshot of the command prompt.</p>
         <br><br><br>
+      </div>
   </div>
 
   <!-- Assistant -->
