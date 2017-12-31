@@ -1,0 +1,10 @@
+{
+  "project_id": "premium-episode-182223",
+  "device_model_id": "jottocraft3",
+  "manifest": {
+    "manufacturer": "jottocraft",
+    "product_name": "PC",
+    "device_description": "Google Assistant on Windows"
+  },
+  "device_type": "action.devices.types.OUTLET"
+}

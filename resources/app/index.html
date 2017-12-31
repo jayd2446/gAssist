@@ -75,7 +75,7 @@ function setCookie(name, data) {
 function assistant() {
 var x = document.getElementById("assistant");
 var y = document.getElementById("setup");
-var y = document.getElementById("debug");
+var z = document.getElementById("debug");
 x.style.display = "block";
 y.style.display = "none";
 z.style.display = "none";
@@ -223,7 +223,7 @@ body.dark .rtransloc {
          <li><div class="user-view">
            <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
             <h5>Google Assistant</h5>
-           <span class="email">v0.0.6 Developer Preview</span>
+           <span class="email">v0.0.7 Developer Preview</span>
          </div></li>
          <li><a href="#!" onclick="assistant();"><i class="material-icons">mic</i>Assistant</a></li>
          <li><a href="#!" onclick="setuppg(1);"><i class="material-icons">build</i>Setup</a></li>
@@ -232,11 +232,13 @@ body.dark .rtransloc {
          <li><div class="divider"></div></li>
          <li><a class="subheader">Assistant</a></li>
          <li><a href="#" onclick="shell.openExternal('https://myactivity.google.com/myactivity')"><i class="material-icons">replay</i>Activity</a></li>
-         <li><a href="#" onclick="shell.openExternal('https://assistant.google.com/intl/en_us/platforms/phones/')"><i class="material-icons">phonelink_setup</i>Mobile App</a></li>
+         <li><a href="#" onclick="shell.openExternal('https://assistant.google.com/intl/en_us/platforms/phones/')"><i class="material-icons">phonelink_setup</i>Settings</a></li>
        </ul>
-       <div style="" class="row">
-       <a href="#" data-activates="slide-out" class="button-collapse btn-flat left" style="margin-top:5px;"><i class="material-icons left">menu</i></a>
-       <a href="#" onclick="opencmd();"  class="btn-flat  right" style="margin-top:5px;"><i class="material-icons left">graphic_eq</i></a>
+       <div style="margin-left:5px;margin-right:5px;" class="row">
+       <a href="#" data-activates="slide-out" class="button-collapse btn-flat" style="margin-top:5px;"><i class="material-icons">menu</i></a>
+       <div class="right">
+       <a href="#" onclick="opencmd();"  class="btn-flat" style="margin-top:5px;"><i class="material-icons">graphic_eq</i></a>
+       <div>
      </div>
   <div class="container" id="setup" style="margin-top:10%;display:none">
     <img src="assistant.png" style="width:150px;height:150px;"></img>
@@ -260,21 +262,26 @@ body.dark .rtransloc {
         <br>
         <br>
         <button class="btn waves-effect" onclick="modules();">Install Python Modules</button>
-        <br><br>
+        <br><br><br><br>
         <div>
           <button onclick="setuppg(3);">Next</button>
         </div>
         <br><br>
         </div>
         <div id="setup3" style="display:none;">
+          <br><br>
+          <h4>Join the Group</h4>
+          <p>You will have to join the Google Group to get access to the Google Cloud project, which allows you to use the assistant.</p>
+          <button onclick="shell.openExternal('https://groups.google.com/forum/#!forum/google-assistant-for-windows')">Join the group</button>
+          <br><br>
         <h4>Register your device</h4>
         <br>
         <button class="btn waves-effect" onclick="device();">Register device with Google</button>
+        <br>
+        <br>
+        <h4>Assistant App</h4>
+        <p>Your PC registers as a device in the Assistant app. Follow the instructions <a herf="#" onclick="shell.openExternal('https://developers.google.com/assistant/sdk/guides/assistant-settings')">here</a> to change settings for your PC's assistant.</p>
         <br><br>
-        <h4>Get the mobile app</h4>
-        <br>
-        <p>Make the assistant yours, change settings, and much more by getting the official mobile app. However, the assistant will still work fine on PC without it.</p>
-        <br>
         <div>
           <button onclick="setuppg(4);">Next</button>
         </div>
@@ -285,10 +292,9 @@ body.dark .rtransloc {
         <h4>Service</h4>
         <br>
         <p>You will need to start the service using the button at the right top corner in order to use the Google Assistant. Test the service to see if everything is working. It should say that it is waiting for this app.</p>
-        <br>
         <p>Install the service by moving the pushtotalk.py file in this program's files to %localappdata%\Programs\Python\Python36-32\Lib\site-packages\googlesamples\assistant\grpc</p>
         <button class="btn waves-effect" onclick="opencmd();">Test</button>
-        <br><br>
+        <br><br><br><br>
         <div>
           <button onclick="setuppg(5);">Next</button>
         </div>
@@ -302,8 +308,10 @@ body.dark .rtransloc {
         <button class="btn waves-effect" onclick="start();">Start using the app</button>
         <br><br><br>
         <h5>Not working?</h5>
-        <p>Email jotto3053@gmail.com, or <a href="#" onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')">open an issue on GitHub</a>. Please provide a screenshot of the command prompt.</p>
-        <br><br><br>
+        <p>Please run the service in debug mode and post a screenshot of your error on GitHub so I can debug and fix it.</p>
+        <button onclick="debug();" style="background-color:red;color:white;">Debug</button>
+        <br>
+        <br><br>
       </div>
   </div>
 
