@@ -2,7 +2,9 @@
 &nbsp;&nbsp;&nbsp;
 <html lang="en">
 <head>
-
+<script>
+version = 7
+</script>
 
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -13,7 +15,7 @@
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <!-- Fluid UI -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="icons.css" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="fluid.css" media="screen,projection"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -48,6 +50,21 @@ shell.openItem('install-python.exe');
   function debugs() {
     shell.openItem('run-debug.bat');
   }
+  function installservice() {
+    var data = fs.readFileSync('pythondir.txt');
+    var str = data.toString();
+    console.log(str);
+    pythondir = str.slice(0, -12);
+    oldd = "pushtotalk.py"
+    neww = pythondir + 'Lib\\site-packages\\googlesamples\\assistant\\grpc\\pushtotalk.py'
+    try {fs.unlink(neww, iferr)} catch(err) {    console.log("fs error:  " + err) }
+    fs.createReadStream(oldd).pipe(fs.createWriteStream(neww));
+    document.getElementById("serinstallstats").innerHTML = "Complete";
+  }
+  function exsetup() {
+    installservice();
+    shell.openItem('update.bat')
+  }
   cookieval = null;
   function getCookie(name) {
     cookieval = null;
@@ -72,42 +89,76 @@ function setCookie(name, data) {
         /*console.log(error);*/
     });
 }
-function assistant() {
-var x = document.getElementById("assistant");
-var y = document.getElementById("setup");
-var z = document.getElementById("debug");
-x.style.display = "block";
-y.style.display = "none";
-z.style.display = "none";
+function opmenu(menu) {
+  if (navigator.onLine || menu == "nointernet") {
+  var a = document.getElementById("assistant");
+  a.style.display = "none";
+  var b = document.getElementById("setup");
+  b.style.display = "none";
+  var c = document.getElementById("debug");
+  c.style.display = "none";
+  var c = document.getElementById("finishupdate");
+  c.style.display = "none";
+  var d = document.getElementById("update");
+  d.style.display = "none";
+  var e = document.getElementById("nointernet");
+  e.style.display = "none";
+  var f = document.getElementById(menu);
+  f.style.display = "block";
+} else {
+  opmenu("nointernet")
 }
-function setup() {
-var x = document.getElementById("assistant");
-var y = document.getElementById("setup");
-var z = document.getElementById("debug");
-x.style.display = "none";
-y.style.display = "block";
-z.style.display = "none";
-}
-function debug() {
-var x = document.getElementById("assistant");
-var y = document.getElementById("setup");
-var z = document.getElementById("debug");
-x.style.display = "none";
-y.style.display = "none";
-z.style.display = "block";
 }
 
   </script>
   <script>
   getCookie("setup");
   setTimeout(function(){
+  hassetup = cookieval
    if (cookieval == null) {
-     setup();
+     opmenu('setup');
    } else {
-     assistant();
+     var dataaa = fs.readFileSync('version.txt');
+     prevv = Number(dataaa.toString());
+     console.log(prevv + "prev")
+     console.log(version + "v")
+   if (prevv < version) {
+     console.log("cool update")
+     opmenu("finishupdate");
+   } else {
+     opmenu("assistant");
+     fs.writeFile('version.txt', version, (err) => {
+     if (err) throw err;
+     console.log('The file has been saved!');
+   });
+   }
    }
   }, 100);
       const fs = require("fs");
+      if (!fs.existsSync("listen.txt")) {
+        fs.writeFile('listen.txt', 'off', (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+}
+if (!fs.existsSync("utrans.txt")) {
+  fs.writeFile('utrans.txt', '', (err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
+}
+if (!fs.existsSync("rtrans.txt")) {
+  fs.writeFile('rtrans.txt', '', (err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
+}
+if (!fs.existsSync("version.txt")) {
+  fs.writeFile('version.txt', version, (err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
+}
   function utrans() {
     var data = fs.readFileSync('utrans.txt');
     $("#chatcurrent .utransloc").html(data.toString());
@@ -128,8 +179,12 @@ z.style.display = "block";
     }
   }
   function start() {
-    assistant();
+    opmenu("assistant");
     setCookie("setup", "true");
+    fs.writeFile('version.txt', version, (err) => {
+    if (err) throw err;
+    console.log('The file has been saved!');
+  });
   }
   function textbox() {
     var r = $("#chatcurrent .rtransloc").text();
@@ -183,7 +238,7 @@ function setuppg(num) {
   if (num !== 1) {x.style.display = "none";}
   y.style.display = "block";
   if (num == 1) {
-    setup();
+    opmenu('setup');
     i = 2
     while (i < 6) {
     console.log(i)
@@ -194,14 +249,59 @@ function setuppg(num) {
   }
   }
   </script>
+  <script>
+
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDtU13gRzRg7OLuUd9GNgPFf6y05ooxr5U",
+    authDomain: "premium-episode-182223.firebaseapp.com",
+    databaseURL: "https://premium-episode-182223.firebaseio.com",
+    projectId: "premium-episode-182223",
+    storageBucket: "premium-episode-182223.appspot.com",
+    messagingSenderId: "616649436562"
+  };
+  firebase.initializeApp(config);
+  console.log("hi")
+var firebaseTpRef = firebase.database().ref().child("latest");
+firebaseTpRef.on('value', function(datasnapshot){
+    var v = Number(datasnapshot.val());
+    var vnon = datasnapshot.val();
+    console.log(v + "   has been detected")
+    if (v > version) {
+      console.log("looks like this is news")
+      i = v
+      console.log("oh no...")
+      function checknlog() {
+      if (i > version) {
+      var tmpfireRef = firebase.database().ref().child(i + "-log");
+      tmpfireRef.on('value', function(snapshot){
+      loggg = snapshot.val();
+      document.getElementById("logss").innerHTML = document.getElementById("logss").innerHTML + "<br><br>" + loggg
+      console.log("done")
+      i = i - 1
+      checknlog();
+      });
+    }
+  }
+  checknlog();
+  var x = document.getElementById("updatebtn");
+  x.style.display = "block";
+    } else {
+      var x = document.getElementById("updatebtn");
+      x.style.display = "none";
+    }
+  });
+</script>
   <style>
   .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    padding-left:10px;
-    padding-right: 10px;
+    position: absolute;
+       bottom:0;
+       margin-left: auto;
+      margin-right: auto;
+       width:100%;
 }
 body:not(.dark) .utransloc {
   background-color:#e6e8ed;
@@ -216,6 +316,28 @@ body.dark .rtransloc {
   border-color: #16181a;
 }
   </style>
+  <script>
+
+  const updateOnLineStatus = () => {
+    if (navigator.onLine) {
+      if (hassetup !== null) {
+      opmenu("assistant");
+    } else {
+      setuppg(1);
+    }
+    } else {
+      opmenu("nointernet");
+    }
+  }
+
+  window.addEventListener('online', updateOnLineStatus)
+  window.addEventListener('offline', updateOnLineStatus)
+function resetdata() {
+  ses.clearStorageData([], function (data) {
+    console.log(data);
+});
+}
+  </script>
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -225,10 +347,10 @@ body.dark .rtransloc {
             <h5>Google Assistant</h5>
            <span class="email">v0.0.7 Developer Preview</span>
          </div></li>
-         <li><a href="#!" onclick="assistant();"><i class="material-icons">mic</i>Assistant</a></li>
-         <li><a href="#!" onclick="setuppg(1);"><i class="material-icons">build</i>Setup</a></li>
-         <li><a href="#" onclick="fluid.dark();"><i class="material-icons">format_paint</i>Change Theme</a></li>
-         <li><a href="#" onclick="debug();"><i class="material-icons">bug_report</i>Debug</a></li>
+         <li><a href="#!" onclick="opmenu('assistant');"><i class="material-icons">mic</i>Assistant</a></li>
+         <li><a href="#!" onclick="setuppg(1);" id="configure"><i class="material-icons">build</i>Setup</a></li>
+         <li id="updatebtn" style="display:none"><a href="#" onclick="opmenu('update');"><i class="material-icons">system_update_alt</i>Update</a></li>
+         <li><a href="#" onclick="opmenu('debug');"><i class="material-icons">bug_report</i>Debug</a></li>
          <li><div class="divider"></div></li>
          <li><a class="subheader">Assistant</a></li>
          <li><a href="#" onclick="shell.openExternal('https://myactivity.google.com/myactivity')"><i class="material-icons">replay</i>Activity</a></li>
@@ -246,12 +368,12 @@ body.dark .rtransloc {
     <div id="setup1">
         <h4>Setup your Google Assistant</h4>
         <br>
-        <br>
         <p>Google Assistant is now on your PC</p>
         <br>
         <div>
           <button onclick="setuppg(2);">Setup</button>
         </div>
+        <br><br><br>
       </div>
       <div id="setup2" style="display:none;">
         <h4>Install Python</h4>
@@ -292,7 +414,8 @@ body.dark .rtransloc {
         <h4>Service</h4>
         <br>
         <p>You will need to start the service using the button at the right top corner in order to use the Google Assistant. Test the service to see if everything is working. It should say that it is waiting for this app.</p>
-        <p>Install the service by moving the pushtotalk.py file in this program's files to %localappdata%\Programs\Python\Python36-32\Lib\site-packages\googlesamples\assistant\grpc</p>
+        <button id="serinstallstats" onclick="installservice();">Install the service</button>
+        <br><br>
         <button class="btn waves-effect" onclick="opencmd();">Test</button>
         <br><br><br><br>
         <div>
@@ -309,19 +432,13 @@ body.dark .rtransloc {
         <br><br><br>
         <h5>Not working?</h5>
         <p>Please run the service in debug mode and post a screenshot of your error on GitHub so I can debug and fix it.</p>
-        <button onclick="debug();" style="background-color:red;color:white;">Debug</button>
+        <button onclick="opmenu('debug');" style="background-color:red;color:white;">Debug</button>
         <br>
         <br><br>
       </div>
   </div>
 
   <!-- Assistant -->
-<script>
-window.setInterval(function() {
-  var elem = document.getElementById('assistant');
-  elem.scrollTop = elem.scrollHeight;
-}, 100);
-</script>
   <div class="container footer" id="assistant" style="margin-top:10%;display:none;width:100%;overflow:auto;z-index:-50000 !important;">
     <br>
         <br><br>
@@ -348,7 +465,42 @@ window.setInterval(function() {
     <br>
     <br>
     <br>
-    <button onclick="debugs();">Debug The Service</button>
+    <button onclick="debugs();">Service Debug Mode</button>
+    <br><br>
+    <button style="color:white;background-color:red;" onclick="resetdata()">Reset App Data</button>
+  </div>
+  <div class="container" id="nointernet" style="display:none">
+    <br>
+    <h4>No Internet Connection</h4>
+    <br>
+    <i class="large material-icons">signal_wifi_off</i>
+    <br>
+    <p>Connect to the internet to use the Google Assistant</p>
+  </div>
+  <div class="container" id="update" style="display:none">
+    <br>
+    <h4>Update</h4>
+    <br>
+    <p id="versiontxt">It looks like there's a new version ready</p>
+    <p>Update Google Assistant for the latest bugfixes, features, and improvements</p>
+    <br>
+    <button onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/releases')">Download the latest version</button>
+    <br><br>
+    <h5>Changelogs from all new versions</h5>
+    <div id="logss">
+    </div>
+    <br>
+  </div>
+  <div class="container" id="finishupdate" style="display:none">
+    <br>
+    <h4>Finish updating</h4>
+    <br>
+    <p>Just click the button below to finish installing updates</p>
+    <br>
+    <button onclick="exsetup();">Finish Update</button>
+    <br><br>
+    <button onclick="start();">Complete</button>
+    <br>
   </div>
 
 

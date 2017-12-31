@@ -1,5 +1,7 @@
 @echo off
 echo Getting ready to install some modules
+where python> pythondir.txt
+echo Installing modules
 python -m pip install --upgrade pip
 python -m pip install --upgrade setuptools
 echo Installing Google Assistant SDK
