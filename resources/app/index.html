@@ -33,6 +33,7 @@ version = 7
 <body>
   <script>
       const {shell} = require('electron');
+      const fs = require("fs");
       var session = require('electron').remote.session;
 var ses = session.fromPartition('persist:name');
   function python() {
@@ -122,7 +123,7 @@ function opmenu(menu) {
      prevv = Number(dataaa.toString());
      console.log(prevv + "prev")
      console.log(version + "v")
-   if (prevv < version) {
+   if (prevv < version && fs.existsSync("version.txt")) {
      console.log("cool update")
      opmenu("finishupdate");
    } else {
@@ -134,7 +135,6 @@ function opmenu(menu) {
    }
    }
   }, 100);
-      const fs = require("fs");
       if (!fs.existsSync("listen.txt")) {
         fs.writeFile('listen.txt', 'off', (err) => {
         if (err) throw err;
