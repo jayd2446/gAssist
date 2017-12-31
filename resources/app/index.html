@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <script>
-version = 7
+version = 8
 </script>
 
   <!-- Basic Page Needs
@@ -128,6 +128,7 @@ function opmenu(menu) {
      opmenu("finishupdate");
    } else {
      opmenu("assistant");
+     opencmd();
      fs.writeFile('version.txt', version, (err) => {
      if (err) throw err;
      console.log('The file has been saved!');
@@ -345,7 +346,7 @@ function resetdata() {
          <li><div class="user-view">
            <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
             <h5>Google Assistant</h5>
-           <span class="email">v0.0.7 Developer Preview</span>
+           <span class="email">v0.0.8 Developer Preview</span>
          </div></li>
          <li><a href="#!" onclick="opmenu('assistant');"><i class="material-icons">mic</i>Assistant</a></li>
          <li><a href="#!" onclick="setuppg(1);" id="configure"><i class="material-icons">build</i>Setup</a></li>
@@ -359,7 +360,7 @@ function resetdata() {
        <div style="margin-left:5px;margin-right:5px;" class="row">
        <a href="#" data-activates="slide-out" class="button-collapse btn-flat" style="margin-top:5px;"><i class="material-icons">menu</i></a>
        <div class="right">
-       <a href="#" onclick="opencmd();"  class="btn-flat" style="margin-top:5px;"><i class="material-icons">graphic_eq</i></a>
+       <a href="#" onclick="shell.openItem('stop.bat')"  class="btn-flat" style="margin-top:5px;"><i class="material-icons">blur_off</i></a>
      </div>
    </div>
   <div class="container" id="setup" style="margin-top:10%;display:none">
@@ -413,11 +414,13 @@ function resetdata() {
         <br>
         <h4>Service</h4>
         <br>
-        <p>You will need to start the service using the button at the right top corner in order to use the Google Assistant. Test the service to see if everything is working. It should say that it is waiting for this app.</p>
+        <p>The service will automatically start and hide itself so it's out of your way. If you want to close the service, use the icon at the right top corner.</p>
         <button id="serinstallstats" onclick="installservice();">Install the service</button>
         <br><br>
-        <button class="btn waves-effect" onclick="opencmd();">Test</button>
-        <br><br><br><br>
+        <button class="btn waves-effect" onclick="debugs();">Test</button>
+        <br>
+        <p>Close the test once you've confirmed that it doesn't throw an error</p>
+        <br><br><br>
         <div>
           <button onclick="setuppg(5);">Next</button>
         </div>
@@ -461,11 +464,16 @@ function resetdata() {
     <br>
     <h4>Debug Menu</h4>
     <br>
-    <button onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')" style="background-color:red;color:white;">Report a bug</button>
+    <button onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')" style="background-color:#2f662b;color:white;">Report a bug</button>
     <br>
     <br>
     <br>
     <button onclick="debugs();">Service Debug Mode</button>
+    <br>
+    <br>
+    <button onclick="shell.openItem('d-top.bat');">Keep assistant on top</button>
+    <br><br>
+    <button onclick="shell.openItem('d-show.bat');">Show Service</button>
     <br><br>
     <button style="color:white;background-color:red;" onclick="resetdata()">Reset App Data</button>
   </div>
