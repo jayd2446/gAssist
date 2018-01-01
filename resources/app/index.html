@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-&nbsp;&nbsp;&nbsp;
 <html lang="en">
 <head>
 <script>
-version = 9
+version = 10
 </script>
 
   <!-- Basic Page Needs
@@ -47,7 +46,7 @@ shell.openItem('install-python.exe');
   }
   function pythoninit() {
     const { exec } = require('child_process');
-    pypr = exec('googlesamples-assistant-pushtotalk --device-model-id jottocraft1 --project-id premium-episode-182223', (err, stdout, stderr) => {
+    pypr = exec('googlesamples-assistant-pushtotalk --device-model-id jottocraft1 --project-id premium-episode-182223 --device-id pc', (err, stdout, stderr) => {
       if (err) {
         console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
         return;
@@ -58,10 +57,10 @@ shell.openItem('install-python.exe');
     });
   }
   function debugs() {
-    shell.openItem('run-debug.bat');
+    shell.openItem('debug-sdk.bat');
   }
   function installsdk() {
-    var data = fs.readFileSync('pythondir.txt');
+    var data = fs.readFileSync('data/pythondir.txt');
     var str = data.toString();
     console.log(str);
     pythondir = str.slice(0, -12);
@@ -128,80 +127,86 @@ function opmenu(menu) {
    if (cookieval == null) {
      opmenu('setup');
    } else {
-     var dataaa = fs.readFileSync('version.txt');
+     var dataaa = fs.readFileSync('data/v.txt');
      prevv = Number(dataaa.toString());
      console.log(prevv + "prev")
      console.log(version + "v")
-   if (prevv < version && fs.existsSync("version.txt")) {
+   if (prevv < version && fs.existsSync("data/v.txt")) {
      console.log("cool update")
      opmenu("finishupdate");
    } else {
-       fs.writeFile('utrans.txt', '', (err) => {
+       fs.writeFile('data/utrans.txt', '', (err) => {
        if (err) throw err;
        console.log('The file has been saved!');
      });
-       fs.writeFile('rtrans.txt', 'Hi, how can I help?', (err) => {
+       fs.writeFile('data/rtrans.txt', 'Hi, how can I help?', (err) => {
        if (err) throw err;
        console.log('The file has been saved!');
      });
      opmenu("assistant");
      pythoninit();
-     fs.writeFile('version.txt', version, (err) => {
+     fs.writeFile('data/v.txt', version, (err) => {
      if (err) throw err;
      console.log('The file has been saved!');
    });
    }
    }
   }, 100);
-      if (!fs.existsSync("listen.txt")) {
-        fs.writeFile('listen.txt', 'off', (err) => {
+        fs.writeFile('data/listen.txt', 'waiting', (err) => {
+        micdisabled = true;
         if (err) throw err;
         console.log('The file has been saved!');
       });
-}
-if (!fs.existsSync("utrans.txt")) {
-  fs.writeFile('utrans.txt', '', (err) => {
+if (!fs.existsSync("data/utrans.txt")) {
+  fs.writeFile('data/utrans.txt', '', (err) => {
   if (err) throw err;
   console.log('The file has been saved!');
 });
 }
-if (!fs.existsSync("rtrans.txt")) {
-  fs.writeFile('rtrans.txt', '', (err) => {
+if (!fs.existsSync("data/rtrans.txt")) {
+  fs.writeFile('data/rtrans.txt', '', (err) => {
   if (err) throw err;
   console.log('The file has been saved!');
 });
 }
-if (!fs.existsSync("version.txt")) {
-  fs.writeFile('version.txt', version, (err) => {
+if (!fs.existsSync("data/v.txt")) {
+  fs.writeFile('data/v.txt', version, (err) => {
   if (err) throw err;
   console.log('The file has been saved!');
 });
 }
   function utrans() {
-    var data = fs.readFileSync('utrans.txt');
+    var data = fs.readFileSync('data/utrans.txt');
     $("#chatcurrent .utransloc").html(data.toString());
   }
   function rtrans() {
-    var dataa = fs.readFileSync('rtrans.txt');
+    var dataa = fs.readFileSync('data/rtrans.txt');
     var str = dataa.toString()
     str1 = str.replace("�", ' ');
     $("#chatcurrent .rtransloc").html(str1);
   }
   function micupdate() {
-    var dataaa = fs.readFileSync('listen.txt');
+    var dataaa = fs.readFileSync('data/listen.txt');
     aaa = dataaa.toString();
     if (aaa == "off") {
       document.getElementById("micicon").innerHTML = "mic_none"
+      micdisabled = false;
     } else {
       if (aaa == "listen") {
         document.getElementById("micicon").innerHTML = "mic"
+        micdisabled = false;
+      } else {
+        if (aaa == "connect") {
+          document.getElementById("micicon").innerHTML = "settings_input_antenna"
+          micdisabled = true;
+        }
       }
     }
   }
   function start() {
     opmenu("assistant");
     setCookie("setup", "true");
-    fs.writeFile('version.txt', version, (err) => {
+    fs.writeFile('data/v.txt', version, (err) => {
     if (err) throw err;
     console.log('The file has been saved!');
   });
@@ -235,23 +240,26 @@ if (!fs.existsSync("version.txt")) {
   refresh();
 }, 200);
 function listen() {
+if (!micdisabled) {
   document.getElementById("micicon").innerHTML = "mic"
   var isactive = $("#chatcurrent .rtransloc").text();
   if (isactive !== "") {
-    document.getElementById("chathistory").innerHTML = document.getElementById("chatcurrent").innerHTML;
-    fs.writeFile('rtrans.txt', '', (err) => {
+    document.getElementById("chathistory").innerHTML = document.getElementById("chathistory").innerHTML + "<br><br>" + document.getElementById("chatcurrent").innerHTML;
+    fs.writeFile('data/rtrans.txt', '', (err) => {
     if (err) throw err;
     console.log('The file has been saved!');
   });
-    fs.writeFile('utrans.txt', '', (err) => {
+    fs.writeFile('data/utrans.txt', '', (err) => {
     if (err) throw err;
     console.log('The file has been saved!');
   });
   }
-  fs.writeFile('listen.txt', 'listen', (err) => {
+  fs.writeFile('data/listen.txt', 'listen', (err) => {
   if (err) throw err;
   console.log('The file has been saved!');
 });
+} else {
+}
 }
 function setuppg(num) {
   numm = num - 1
@@ -270,9 +278,6 @@ function setuppg(num) {
   }
   }
   }
-  </script>
-  <script>
-
   </script>
   <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
 <script>
@@ -316,14 +321,26 @@ firebaseTpRef.on('value', function(datasnapshot){
       x.style.display = "none";
     }
   });
+function terminate() {
+  const { exec } = require('child_process'); //ensure that the python Script is running
+  pypr = exec('taskkill /IM googlesamples-assistant-pushtotalk.exe /F', (err, stdout, stderr) => {
+    if (err) {
+      console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
+      return;
+    }
+    // the *entire* stdout and stderr (buffered)
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+  });
+}
 </script>
   <style>
-  .footer {
-    position: absolute;
-       bottom:0;
-       margin-left: auto;
-      margin-right: auto;
-       width:100%;
+  #assistant {
+  width: 100%;
+  height:auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 body:not(.dark) .utransloc {
   background-color:#e6e8ed;
@@ -367,7 +384,7 @@ function resetdata() {
          <li><div class="user-view">
            <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
             <h5>Google Assistant</h5>
-           <span class="email">v0.0.9 Developer Preview</span>
+           <span class="email">v0.1.0 Beta</span>
          </div></li>
          <li><a href="#!" onclick="opmenu('assistant');"><i class="material-icons">mic</i>Assistant</a></li>
          <li><a href="#!" onclick="setuppg(1);" id="configure"><i class="material-icons">build</i>Setup</a></li>
@@ -378,9 +395,10 @@ function resetdata() {
          <li><a href="#" onclick="shell.openExternal('https://myactivity.google.com/myactivity')"><i class="material-icons">replay</i>Activity</a></li>
          <li><a href="#" onclick="shell.openExternal('https://assistant.google.com/intl/en_us/platforms/phones/')"><i class="material-icons">phonelink_setup</i>Settings</a></li>
        </ul>
-       <div style="margin-left:5px;margin-right:5px;" class="row">
-       <a href="#" data-activates="slide-out" class="button-collapse btn-flat" style="margin-top:5px;"><i class="material-icons">menu</i></a>
+       <div style="background-color:#FFFFFF;z-index:500 !important;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);padding:6px;width:100%;position:absolute" class="row">
+       <a href="#" data-activates="slide-out" class="button-collapse btn-flat"><i class="material-icons">menu</i></a>
    </div>
+   <br><br><br>
   <div class="container" id="setup" style="margin-top:10%;display:none">
     <img src="assistant.png" style="width:150px;height:150px;"></img>
     <br>
@@ -460,24 +478,42 @@ function resetdata() {
   </div>
 
   <!-- Assistant -->
-  <div class="container footer" id="assistant" style="margin-top:10%;display:none;width:100%;overflow:auto;z-index:-50000 !important;">
-    <br>
-        <br><br>
-        <div id="chathistory">
+  <div id="assistant" style="display:none;z-index -5000 !important;">
+        <div id="chathistory" style="">
+          <div class="utransloc" style="margin-right:2%;border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">Test</div>
+          <br><br>
+          <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;margin-left:2%"></img>
+          <div class="rtransloc" style="border-radius:17px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;">Ok</div>
+          <br>
+          <div class="utransloc" style="margin-right:2%;border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">Hello</div>
+          <br><br>
+          <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;margin-left:2%"></img>
+          <div class="rtransloc" style="border-radius:17px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;">Goodbye</div>
+          <br>
+          <div class="utransloc" style="margin-right:2%;border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">gdaf</div>
+          <br><br>
+          <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;margin-left:2%"></img>
+          <div class="rtransloc" style="border-radius:17px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;">test</div>
+          <br>
+          <div class="utransloc" style="margin-right:2%;border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">hahahahahah</div>
+          <br><br>
+          <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;margin-left:2%"></img>
+          <div class="rtransloc" style="border-radius:17px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;">wtf</div>
         </div>
         <br><br>
         <div id="chatcurrent">
-        <div class="utransloc" style="border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">Test</div>
+        <div class="utransloc" style="margin-right:2%;border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right"></div>
         <br><br>
-        <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;"></img>
+        <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;margin-left:2%"></img>
         <div class="rtransloc" style="border-radius:17px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;"></div>
       </div>
         <br><br><br>
         <div class="center">
-        <button class="btn-flat waves-effect btn-large" onclick="listen();"><i id="micicon" class="material-icons">mic_none</i></button>
+        <button class="btn-flat waves-effect btn-large" onclick="listen();"><i id="micicon" class="material-icons">settings_input_antenna</i></button>
         </div>
-        <br>
+                <br>
   </div>
+
   <div class="container" id="debug" style="display:none">
     <h4>Debug</h4>
     <br>
@@ -488,6 +524,15 @@ function resetdata() {
     <button class="btn waves-effect" onclick="debugs();">Debug Assistant SDK</button>
     <br>
     <br>
+    <button class="btn waves-effect" onclick="installsdk();">Update Assistant SDK</button>
+    <br>
+    <br>
+    <button class="btn waves-effect" onclick="terminate();">Terminate Assistant SDK</button>
+    <br>
+    <br>
+    <button class="btn waves-effect" onclick="pythoninit();">Start Assistant SDK</button>
+    <br>
+    <br>
     <button class="btn waves-effect" onclick="shell.openItem('d-top.bat');">Keep assistant on top</button>
     <br>
     <br>
@@ -495,6 +540,7 @@ function resetdata() {
     <br>
     <br><br>
     <button class="btn waves-effect" style="color:white;background-color:red;" onclick="resetdata()">Reset App Data</button>
+    <br><br><br><br>
   </div>
   <div class="container" id="nointernet" style="display:none">
     <br>

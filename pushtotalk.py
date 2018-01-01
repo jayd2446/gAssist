@@ -141,7 +141,7 @@ class SampleAssistant(object):
                              ' '.join(r.transcript
                                       for r in resp.speech_results))
                 logging.info('Playing assistant response.')
-                file2write=open("utrans.txt",'w')
+                file2write=open("data/utrans.txt",'w')
                 file2write.write(' '.join(r.transcript
                                       for r in resp.speech_results))
                 file2write.close()
@@ -149,11 +149,11 @@ class SampleAssistant(object):
                 self.conversation_stream.write(resp.audio_out.audio_data)
             if looptime == 2:
                 logging.info(resp.dialog_state_out.supplemental_display_text)
-                file2write=open("rtrans.txt",'w')
+                file2write=open("data/rtrans.txt",'w')
                 file2write.write(resp.dialog_state_out.supplemental_display_text)
                 file2write.close()
                 time.sleep(0.3)
-                file2write=open("listen.txt",'w')
+                file2write=open("data/listen.txt",'w')
                 file2write.write("off")
                 file2write.close()
             if resp.dialog_state_out.conversation_state:
@@ -167,7 +167,7 @@ class SampleAssistant(object):
             if resp.dialog_state_out.microphone_mode == DIALOG_FOLLOW_ON:
                 continue_conversation = True
                 logging.info('Expecting follow-on query from user.')
-                file2write=open("listen.txt",'w')
+                file2write=open("data/listen.txt",'w')
                 file2write.write("listen")
                 file2write.close()
             elif resp.dialog_state_out.microphone_mode == CLOSE_MICROPHONE:
@@ -440,7 +440,7 @@ def main(api_endpoint, credentials, project_id,
             if wait_for_user_trigger:
                 time.sleep(0.3)
                 logging.info("Waiting for request to start from the Google Assistant app....")
-                with open('listen.txt', 'r') as myfile:
+                with open('data/listen.txt', 'r') as myfile:
                     data=myfile.read().replace('\n', '')
                 logging.info(data)
                 if data == "listen" :
@@ -452,6 +452,11 @@ def main(api_endpoint, credentials, project_id,
                     # If we only want one conversation, break.
                     if once and (not continue_conversation):
                         break
+                else :
+                    if data == "waiting" :
+                        file2write=open("data/listen.txt",'w')
+                        file2write.write("off")
+                        file2write.close()
             else:
                 continue_conversation = assistant.assist()
                 # wait for user trigger if there is no follow-up turn in
