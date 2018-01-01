@@ -34,11 +34,19 @@ app.on('ready', createWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
+  
+    const { exec } = require('child_process'); //ensure that the python Script is running
+    pypr = exec('taskkill /IM googlesamples-assistant-pushtotalk.exe /F', (err, stdout, stderr) => {
+      if (err) {
+        console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
+        return;
+      }
+      // the *entire* stdout and stderr (buffered)
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    });
     app.quit()
-  }
+
 })
 
 app.on('activate', () => {

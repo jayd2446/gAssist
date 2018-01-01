@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <script>
-version = 8
+version = 9
 </script>
 
   <!-- Basic Page Needs
@@ -45,13 +45,22 @@ shell.openItem('install-python.exe');
   function device() {
     shell.openItem('register-device.bat')
   }
-  function opencmd() {
-    shell.openItem('run.bat');
+  function pythoninit() {
+    const { exec } = require('child_process');
+    pypr = exec('googlesamples-assistant-pushtotalk --device-model-id jottocraft1 --project-id premium-episode-182223', (err, stdout, stderr) => {
+      if (err) {
+        console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
+        return;
+      }
+      // the *entire* stdout and stderr (buffered)
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    });
   }
   function debugs() {
     shell.openItem('run-debug.bat');
   }
-  function installservice() {
+  function installsdk() {
     var data = fs.readFileSync('pythondir.txt');
     var str = data.toString();
     console.log(str);
@@ -63,7 +72,7 @@ shell.openItem('install-python.exe');
     document.getElementById("serinstallstats").innerHTML = "Complete";
   }
   function exsetup() {
-    installservice();
+    installsdk();
     shell.openItem('update.bat')
   }
   cookieval = null;
@@ -127,8 +136,16 @@ function opmenu(menu) {
      console.log("cool update")
      opmenu("finishupdate");
    } else {
+       fs.writeFile('utrans.txt', '', (err) => {
+       if (err) throw err;
+       console.log('The file has been saved!');
+     });
+       fs.writeFile('rtrans.txt', 'Hi, how can I help?', (err) => {
+       if (err) throw err;
+       console.log('The file has been saved!');
+     });
      opmenu("assistant");
-     opencmd();
+     pythoninit();
      fs.writeFile('version.txt', version, (err) => {
      if (err) throw err;
      console.log('The file has been saved!');
@@ -166,7 +183,9 @@ if (!fs.existsSync("version.txt")) {
   }
   function rtrans() {
     var dataa = fs.readFileSync('rtrans.txt');
-    $("#chatcurrent .rtransloc").html(dataa.toString());
+    var str = dataa.toString()
+    str1 = str.replace("�", ' ');
+    $("#chatcurrent .rtransloc").html(str1);
   }
   function micupdate() {
     var dataaa = fs.readFileSync('listen.txt');
@@ -192,8 +211,10 @@ if (!fs.existsSync("version.txt")) {
     var u = $("#chatcurrent .utransloc").text();
     if (r == "") {
       $("#chatcurrent .rtransloc").hide()
+      $("#chatcurrent .assistantpic").hide();
     } else {
       $("#chatcurrent .rtransloc").show()
+      $("#chatcurrent .assistantpic").show()
     }
     if (u == "") {
       $("#chatcurrent .utransloc").hide()
@@ -346,7 +367,7 @@ function resetdata() {
          <li><div class="user-view">
            <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
             <h5>Google Assistant</h5>
-           <span class="email">v0.0.8 Developer Preview</span>
+           <span class="email">v0.0.9 Developer Preview</span>
          </div></li>
          <li><a href="#!" onclick="opmenu('assistant');"><i class="material-icons">mic</i>Assistant</a></li>
          <li><a href="#!" onclick="setuppg(1);" id="configure"><i class="material-icons">build</i>Setup</a></li>
@@ -359,9 +380,6 @@ function resetdata() {
        </ul>
        <div style="margin-left:5px;margin-right:5px;" class="row">
        <a href="#" data-activates="slide-out" class="button-collapse btn-flat" style="margin-top:5px;"><i class="material-icons">menu</i></a>
-       <div class="right">
-       <a href="#" onclick="shell.openItem('stop.bat')"  class="btn-flat" style="margin-top:5px;"><i class="material-icons">blur_off</i></a>
-     </div>
    </div>
   <div class="container" id="setup" style="margin-top:10%;display:none">
     <img src="assistant.png" style="width:150px;height:150px;"></img>
@@ -372,7 +390,7 @@ function resetdata() {
         <p>Google Assistant is now on your PC</p>
         <br>
         <div>
-          <button onclick="setuppg(2);">Setup</button>
+          <button class="btn waves-effect" onclick="setuppg(2);">Setup</button>
         </div>
         <br><br><br>
       </div>
@@ -387,7 +405,7 @@ function resetdata() {
         <button class="btn waves-effect" onclick="modules();">Install Python Modules</button>
         <br><br><br><br>
         <div>
-          <button onclick="setuppg(3);">Next</button>
+          <button class="btn waves-effect" onclick="setuppg(3);">Next</button>
         </div>
         <br><br>
         </div>
@@ -395,7 +413,7 @@ function resetdata() {
           <br><br>
           <h4>Join the Group</h4>
           <p>You will have to join the Google Group to get access to the Google Cloud project, which allows you to use the assistant. Nothing will be posted, and you won't recive any emails.</p>
-          <button onclick="shell.openExternal('https://groups.google.com/forum/#!forum/google-assistant-for-windows')">Join the group</button>
+          <button class="btn waves-effect" onclick="shell.openExternal('https://groups.google.com/forum/#!forum/google-assistant-for-windows')">Join the group</button>
           <br><br>
         <h4>Register your device</h4>
         <br>
@@ -406,23 +424,23 @@ function resetdata() {
         <p>Your PC registers as a device in the Assistant app. Follow the instructions <a herf="#" onclick="shell.openExternal('https://developers.google.com/assistant/sdk/guides/assistant-settings')">here</a> to change settings for your PC's assistant.</p>
         <br><br>
         <div>
-          <button onclick="setuppg(4);">Next</button>
+          <button class="btn waves-effect" onclick="setuppg(4);">Next</button>
         </div>
         <br><br>
       </div>
       <div id="setup4" style="display:none;">
         <br>
-        <h4>Service</h4>
+        <h4>Connect Python</h4>
         <br>
-        <p>The service will automatically start and hide itself so it's out of your way. If you want to close the service, use the icon at the right top corner.</p>
-        <button id="serinstallstats" onclick="installservice();">Install the service</button>
+        <p>Install the Python Connection to connect the Google Assistant SDK to this app.</p>
+        <button class="btn waves-effect" id="serinstallstats" onclick="installsdk();">Connect</button>
         <br><br>
         <button class="btn waves-effect" onclick="debugs();">Test</button>
         <br>
         <p>Close the test once you've confirmed that it doesn't throw an error</p>
         <br><br><br>
         <div>
-          <button onclick="setuppg(5);">Next</button>
+          <button class="btn waves-effect" onclick="setuppg(5);">Next</button>
         </div>
         <br><br>
       </div>
@@ -434,8 +452,8 @@ function resetdata() {
         <button class="btn waves-effect" onclick="start();">Start using the app</button>
         <br><br><br>
         <h5>Not working?</h5>
-        <p>Please run the service in debug mode and post a screenshot of your error on GitHub so I can debug and fix it.</p>
-        <button onclick="opmenu('debug');" style="background-color:red;color:white;">Debug</button>
+        <p>Please run the python connector in debug mode and post a screenshot of your error on GitHub so I can debug and fix it.</p>
+        <button class="btn waves-effect" onclick="opmenu('debug');" style="background-color:red;color:white;">Debug</button>
         <br>
         <br><br>
       </div>
@@ -449,10 +467,10 @@ function resetdata() {
         </div>
         <br><br>
         <div id="chatcurrent">
-        <div class="utransloc" style="border-radius:50px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">Test</div>
+        <div class="utransloc" style="border-radius:17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;align-items:right;text-align:right;float:right;" class="right">Test</div>
         <br><br>
-        <img src="assistant.png" style="width:50px;height:50px;"></img>
-        <div class="rtransloc" style="border-radius:30px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;"></div>
+        <img class="assistantpic" src="assistant.png" style="width:50px;height:50px;"></img>
+        <div class="rtransloc" style="border-radius:17px;border-style: solid;border-width: medium;display: inline-block;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:5px;"></div>
       </div>
         <br><br><br>
         <div class="center">
@@ -461,21 +479,22 @@ function resetdata() {
         <br>
   </div>
   <div class="container" id="debug" style="display:none">
+    <h4>Debug</h4>
     <br>
-    <h4>Debug Menu</h4>
-    <br>
-    <button onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')" style="background-color:#2f662b;color:white;">Report a bug</button>
-    <br>
+    <button class="btn waves-effect" onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/issues/new')" style="background-color:#2f662b;color:white;">Report a bug</button>
     <br>
     <br>
-    <button onclick="debugs();">Service Debug Mode</button>
+    <br>
+    <button class="btn waves-effect" onclick="debugs();">Debug Assistant SDK</button>
     <br>
     <br>
-    <button onclick="shell.openItem('d-top.bat');">Keep assistant on top</button>
+    <button class="btn waves-effect" onclick="shell.openItem('d-top.bat');">Keep assistant on top</button>
+    <br>
+    <br>
+    <button class="btn waves-effect" onclick='opmenu("finishupdate");'>Finish Update Menu</button>
+    <br>
     <br><br>
-    <button onclick="shell.openItem('d-show.bat');">Show Service</button>
-    <br><br>
-    <button style="color:white;background-color:red;" onclick="resetdata()">Reset App Data</button>
+    <button class="btn waves-effect" style="color:white;background-color:red;" onclick="resetdata()">Reset App Data</button>
   </div>
   <div class="container" id="nointernet" style="display:none">
     <br>
@@ -492,7 +511,7 @@ function resetdata() {
     <p id="versiontxt">It looks like there's a new version ready</p>
     <p>Update Google Assistant for the latest bugfixes, features, and improvements</p>
     <br>
-    <button onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/releases')">Download the latest version</button>
+    <button class="btn waves-effect" onclick="shell.openExternal('https://github.com/jottocraft/google-assistant/releases')">Download the latest version</button>
     <br><br>
     <h5>Changelogs from all new versions</h5>
     <div id="logss">
@@ -505,9 +524,9 @@ function resetdata() {
     <br>
     <p>Just click the button below to finish installing updates</p>
     <br>
-    <button onclick="exsetup();">Finish Update</button>
+    <button class="btn waves-effect" onclick="exsetup();">Finish Update</button>
     <br><br>
-    <button onclick="start();">Complete</button>
+    <button class="btn waves-effect" onclick="start();">Complete</button>
     <br>
   </div>
 
