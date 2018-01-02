@@ -1,1 +1,0 @@
-C:\Users\jack\node_modules\electron\dist\electron.exe %~dp0
