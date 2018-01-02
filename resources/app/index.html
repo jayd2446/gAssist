@@ -33,6 +33,35 @@ version = 11
   <script>
       const {shell} = require('electron');
       const fs = require("fs");
+      const { exec } = require('child_process');
+      //Make sure data files exist
+
+      if (!fs.existsSync("data/utrans.txt")) {
+        fs.writeFile('data/utrans.txt', '', (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      }
+      if (!fs.existsSync("data/rtrans.txt")) {
+        fs.writeFile('data/rtrans.txt', '', (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      }
+      if (!fs.existsSync("data/v.txt")) {
+        fs.writeFile('data/v.txt', version, (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      }
+      if (!fs.existsSync("data/debug.txt")) {
+        fs.writeFile('data/debug.txt', "", (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      }
+
+
       var session = require('electron').remote.session;
 var ses = session.fromPartition('persist:name');
   function python() {
@@ -45,7 +74,6 @@ shell.openItem('install-python.exe');
     shell.openItem('register-device.bat')
   }
   function pythoninit() {
-    const { exec } = require('child_process');
     pypr = exec('googlesamples-assistant-pushtotalk --device-model-id jottocraft1 --project-id premium-episode-182223 --device-id pc', (err, stdout, stderr) => {
       if (err) {
         console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
@@ -56,8 +84,32 @@ shell.openItem('install-python.exe');
       console.log(`stderr: ${stderr}`);
     });
   }
+  function setup() {
+    pypr = exec('setup.bat', (err, stdout, stderr) => {
+      if (err) {
+        console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
+        return;
+      }
+      // the *entire* stdout and stderr (buffered)
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    });
+    document.getElementById("setupbtn").innerHTML = "Installing Modules";
+    $("#setupbtn").attr("onclick","");
+  }
+  function aot() {
+    pypr = exec('cmdow "Google Assistant" /TOP', (err, stdout, stderr) => {
+      if (err) {
+        console.log("NODE HAS FAILED US ALL AND THE WORLD WILL NOW EXPLODE" + "    " + err)
+        return;
+      }
+      // the *entire* stdout and stderr (buffered)
+      console.log(`stdout: ${stdout}`);
+      console.log(`stderr: ${stderr}`);
+    });
+  }
+
   function debugs() {
-    shell.openItem('debug-sdk.bat');
   }
   function installsdk() {
     var data = fs.readFileSync('data/pythondir.txt');
@@ -157,24 +209,6 @@ function opmenu(menu) {
         if (err) throw err;
         console.log('The file has been saved!');
       });
-if (!fs.existsSync("data/utrans.txt")) {
-  fs.writeFile('data/utrans.txt', '', (err) => {
-  if (err) throw err;
-  console.log('The file has been saved!');
-});
-}
-if (!fs.existsSync("data/rtrans.txt")) {
-  fs.writeFile('data/rtrans.txt', '', (err) => {
-  if (err) throw err;
-  console.log('The file has been saved!');
-});
-}
-if (!fs.existsSync("data/v.txt")) {
-  fs.writeFile('data/v.txt', version, (err) => {
-  if (err) throw err;
-  console.log('The file has been saved!');
-});
-}
   function utrans() {
     var data = fs.readFileSync('data/utrans.txt');
     $("#chatcurrent .utransloc").html(data.toString());
@@ -185,6 +219,44 @@ if (!fs.existsSync("data/v.txt")) {
     str1 = str.replace("�", ' ');
     $("#chatcurrent .rtransloc").html(str1);
   }
+  ftmp = "";
+  fs.writeFile('data/debug.txt', '', (err) => {
+  if (err) throw err;
+  console.log('The file has been saved!');
+});
+  function checkdebuglog() {
+    var raw = fs.readFileSync('data/debug.txt');
+    var f = raw.toString()
+    var str = f;
+    ff = str.substring(0, str.length - 2);
+    if (f !== ftmp && f !== "") {
+      if (ff == "p1") {
+        document.getElementById("debugconsole").innerHTML = document.getElementById("debugconsole").innerHTML + "<br><code>" + "Running Setup Part 2" + "</code>";
+        runsetup2()
+        $("#setupbtn").attr("onclick",'window.alert("Please login to Google using the command prompt window. If its not there, something went wrong. Try setting up again, or report a bug using the debug button in the menu.")');
+        document.getElementById("setupbtn").innerHTML = "Login to Google"
+        fs.writeFile('data/debug.txt', '', (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      }
+      if (ff == "done") {
+        document.getElementById("debugconsole").innerHTML = document.getElementById("debugconsole").innerHTML + "<br><code>" + "Done" + "</code>";
+        $("#setupbtn").attr("onclick","setuppg(2)");
+        document.getElementById("setupbtn").innerHTML = "Next"
+        fs.writeFile('data/debug.txt', '', (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      }
+      console.log("Debug log:" + f)
+      ftmp = f;
+      document.getElementById("debugconsole").innerHTML = document.getElementById("debugconsole").innerHTML + "<br><code>" + f + "</code>";
+    }
+  }
+function runsetup2() {
+  shell.openItem('setup2.bat');
+}
   function micupdate() {
     var dataaa = fs.readFileSync('data/listen.txt');
     aaa = dataaa.toString();
@@ -231,6 +303,8 @@ if (!fs.existsSync("data/v.txt")) {
   <script>
   setTimeout(function(){
   function refresh() {
+  //  try {checkdebuglog();} catch(err) {}
+    checkdebuglog();
     utrans();
     rtrans();
     micupdate();
@@ -376,7 +450,17 @@ function resetdata() {
     console.log(data);
 });
 }
+function sdetails() {
+  var x = document.getElementById("debugconsole");
+  x.style.display = "block";
+}
   </script>
+  <style>
+  .mi {
+    background-color:#2075fc !important;
+    color: white !important;
+  }
+  </style>
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -384,92 +468,48 @@ function resetdata() {
          <li><div class="user-view">
            <a href="#!user"><img style="width:64px;height:64x;" src="assistant.png"></a>
             <h5>Google Assistant</h5>
-           <span class="email">v0.1.1 Beta</span>
+           <span class="email">v0.1.5 Beta</span>
          </div></li>
          <li><a href="#!" onclick="opmenu('assistant');"><i class="material-icons">mic</i>Assistant</a></li>
          <li><a href="#!" onclick="setuppg(1);" id="configure"><i class="material-icons">build</i>Setup</a></li>
-         <li id="updatebtn" style="display:none"><a href="#" onclick="opmenu('update');"><i class="material-icons">system_update_alt</i>Update</a></li>
+         <li style="display:none;"><a href="#" onclick="fluid.dark();"><i class="material-icons">format_paint</i>Change Theme</a></li>
          <li><a href="#" onclick="opmenu('debug');"><i class="material-icons">bug_report</i>Debug</a></li>
          <li><div class="divider"></div></li>
          <li><a class="subheader">Assistant</a></li>
          <li><a href="#" onclick="shell.openExternal('https://myactivity.google.com/myactivity')"><i class="material-icons">replay</i>Activity</a></li>
          <li><a href="#" onclick="shell.openExternal('https://assistant.google.com/intl/en_us/platforms/phones/')"><i class="material-icons">phonelink_setup</i>Settings</a></li>
        </ul>
-       <div style="background-color:#FFFFFF;z-index:500 !important;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);padding:6px;width:100%;position:absolute" class="row">
+       <div style="z-index:500 !important;padding:6px;width:100%;position:absolute" class="row">
        <a href="#" data-activates="slide-out" class="button-collapse btn-flat"><i class="material-icons">menu</i></a>
+       <div class="right">
+         <a id="updatebtn" style="display:none" href="#" onclick="opmenu('update')" class="btn-flat"><i class="material-icons">system_update_alt</i></a>
+       </div>
    </div>
    <br><br><br>
   <div class="container" id="setup" style="margin-top:10%;display:none">
-    <img src="assistant.png" style="width:150px;height:150px;"></img>
+    <img src="assistant.png" style="width:100px;height:100px;"></img>
     <br>
     <div id="setup1">
-        <h4>Setup your Google Assistant</h4>
+        <h4>Google Assistant</h4>
         <br>
-        <p>Google Assistant is now on your PC</p>
+        <p>Setup your Google Assistant on your PC</p>
         <br>
-        <div>
-          <button class="btn waves-effect" onclick="setuppg(2);">Setup</button>
+        <div class="btns" >
+          <button id="setupbtn" class="btn waves-effect mi" onclick="setup();">Setup</button>
         </div>
-        <br><br><br>
+        <br>
+        <br>
+        <div id="debugconsole" style="display:none">
+        <code>Setup hasn't started yet...</code>
+        </div>
+        <br>
       </div>
       <div id="setup2" style="display:none;">
-        <h4>Install Python</h4>
+        <h5>All done!</h5>
         <br>
-        <p>Make sure to install with the system path and pip. If you have python 2, you may have to upgrade.</p>
-        <br>
-        <button class="btn waves-effect" onclick="python();">Install Python 3</button>
-        <br>
-        <br>
-        <button class="btn waves-effect" onclick="modules();">Install Python Modules</button>
-        <br><br><br><br>
-        <div>
-          <button class="btn waves-effect" onclick="setuppg(3);">Next</button>
-        </div>
-        <br><br>
-        </div>
-        <div id="setup3" style="display:none;">
-          <br><br>
-          <h4>Join the Group</h4>
-          <p>You will have to join the Google Group to get access to the Google Cloud project, which allows you to use the assistant. Nothing will be posted, and you won't recive any emails.</p>
-          <button class="btn waves-effect" onclick="shell.openExternal('https://groups.google.com/forum/#!forum/google-assistant-for-windows')">Join the group</button>
-          <br><br>
-        <h4>Register your device</h4>
-        <br>
-        <button class="btn waves-effect" onclick="device();">Register device with Google</button>
-        <br>
-        <br>
-        <h4>Assistant App</h4>
-        <p>Your PC registers as a device in the Assistant app. Follow the instructions <a herf="#" onclick="shell.openExternal('https://developers.google.com/assistant/sdk/guides/assistant-settings')">here</a> to change settings for your PC's assistant.</p>
-        <br><br>
-        <div>
-          <button class="btn waves-effect" onclick="setuppg(4);">Next</button>
-        </div>
-        <br><br>
-      </div>
-      <div id="setup4" style="display:none;">
-        <br>
-        <h4>Connect Python</h4>
-        <br>
-        <p>Install the Python Connection to connect the Google Assistant SDK to this app.</p>
-        <button class="btn waves-effect" id="serinstallstats" onclick="installsdk();">Connect</button>
-        <br><br>
-        <button class="btn waves-effect" onclick="debugs();">Test</button>
-        <br>
-        <p>Close the test once you've confirmed that it doesn't throw an error</p>
+        <button class="btn waves-effect" onclick="start();">Start</button>
         <br><br><br>
-        <div>
-          <button class="btn waves-effect" onclick="setuppg(5);">Next</button>
-        </div>
-        <br><br>
-      </div>
-      <div id="setup5" style="display:none;">
-        <h5>Working?</h5>
-        <br>
-        <p>Great! Have fun using the Google Assistant! Note that some things will not work because of the SDK's limitations. You can always setup again if anything breaks using the menu at the left top corner.</p>
-        <br>
-        <button class="btn waves-effect" onclick="start();">Start using the app</button>
-        <br><br><br>
-        <h5>Not working?</h5>
+        <h5>Stuck?</h5>
         <p>Please run the python connector in debug mode and post a screenshot of your error on GitHub so I can debug and fix it.</p>
         <button class="btn waves-effect" onclick="opmenu('debug');" style="background-color:red;color:white;">Debug</button>
         <br>
@@ -505,6 +545,12 @@ function resetdata() {
     <button class="btn waves-effect" onclick="debugs();">Debug Assistant SDK</button>
     <br>
     <br>
+    <button class="btn waves-effect" onclick="sdetails();">Show log in setup</button>
+    <br>
+    <br>
+    <button class="btn waves-effect" onclick="start();">Skip setup</button>
+    <br>
+    <br>
     <button class="btn waves-effect" onclick="installsdk();">Update Assistant SDK</button>
     <br>
     <br>
@@ -514,7 +560,10 @@ function resetdata() {
     <button class="btn waves-effect" onclick="pythoninit();">Start Assistant SDK</button>
     <br>
     <br>
-    <button class="btn waves-effect" onclick="shell.openItem('d-top.bat');">Keep assistant on top</button>
+    <button class="btn waves-effect" onclick="fluid.dark();">Dark Mode</button>
+    <br>
+    <br>
+    <button class="btn waves-effect" onclick="aot();">Keep assistant on top</button>
     <br>
     <br>
     <button class="btn waves-effect" onclick='opmenu("finishupdate");'>Finish Update Menu</button>
