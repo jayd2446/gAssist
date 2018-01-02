@@ -1,6 +1,6 @@
 @echo off
 echo Getting ready to install some modules
-where python> pythondir.txt
+where python> data/pythondir.txt
 echo Installing modules
 python -m pip install --upgrade pip
 python -m pip install --upgrade setuptools
