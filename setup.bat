@@ -2,6 +2,7 @@
 echo Getting ready to install some modules> data/debug.txt
 where python> data/pythondir.txt
 echo Installing modules> data/debug.txt
+python -m ensurepip
 python -m pip install --upgrade pip> data/debug.txt
 python -m pip install --upgrade setuptools> data/debug.txt
 echo Installing Google Assistant SDK> data/debug.txt
