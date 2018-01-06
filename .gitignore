@@ -1,3 +1,4 @@
 *.txt
 *.lock
 resources/app
+electron
